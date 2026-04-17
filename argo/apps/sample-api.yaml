@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-api
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Girish7010/DevOps-k3s-Assessment-SF-Lab.git
+    targetRevision: HEAD
+    path: apps/sample-api
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: sample-api
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
