@@ -35,7 +35,12 @@ fi
 
 kubectl cluster-info
 
-# 3. Setup ArgoCD
+# 3. Build & Import Docker Images
+echo "[+] Building and importing container images..."
+make api-docker
+make traffic-docker
+
+# 4. Setup ArgoCD
 echo "[+] Installing ArgoCD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -49,8 +54,7 @@ kubectl wait --for=condition=Available deployment/argocd-dex-server -n argocd --
 # 4. Apply Root Application (GitOps Entrypoint)
 echo "[+] Applying GitOps Root Application..."
 
-# Substitute the repository url in the root application yaml temporarily
-cat argo/root-application.yaml | sed "s|__REPO_URL__|$REPO_URL|g" | kubectl apply -f -
+kubectl apply -f argo/root-application.yaml
 
 echo "================================================="
 echo "Bootstrap Complete!"

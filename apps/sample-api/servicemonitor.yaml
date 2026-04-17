@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sample-api
+  labels:
+    release: kube-prometheus-stack # required for the default prometheus to pick it up
+spec:
+  selector:
+    matchLabels:
+      app: sample-api
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 15s
